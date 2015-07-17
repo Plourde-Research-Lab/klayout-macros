@@ -30,7 +30,7 @@ private
   @action
 end
 
-$compute_total_length = MenuAction.new( "Compute total length of selected shapes", "Ctl + L" ) do 
+$calc_freq = MenuAction.new( "Compute frequency of selected CPW", "Ctl + L" ) do 
 
   app = RBA::Application.instance
   mw = app.main_window
@@ -55,9 +55,17 @@ $compute_total_length = MenuAction.new( "Compute total length of selected shapes
       total_length += a * m * m / cpw_width
     end
 
+    path = "C:/Users/Caleb/KLayout/macros/calc_freq.py"
+    freq = `python #{path} #{total_length}`
+    puts freq
+    
+    text = "Total length of selected resonators is #{total_length}  micron\n"
+    text += "Total frequency of selected resonator lengths is #{freq}\n"
+  
+    RBA::MessageBox.info("Frequency",text , RBA::MessageBox.b_ok)
+
   end
 
-  RBA::MessageBox.info("Total length", "Total length of selected objects is #{total_length}  micron", RBA::MessageBox.b_ok)
 
 end
 
@@ -66,4 +74,4 @@ mw = app.main_window
 
 menu = mw.menu
 menu.insert_separator("tools_menu.end", "sep_calc_length")
-menu.insert_item("tools_menu.end", "compute_total_length", $compute_total_length)
+menu.insert_item("tools_menu.end", "calc_freq", $calc_freq)

@@ -7,7 +7,7 @@ class MenuAction < RBA::Action
   def triggered 
     @action.call( self ) 
   end
-private
+  private
   @action
 end
 
@@ -21,6 +21,7 @@ def print_image_definitions(file, cv, mask_name)
   
   itrans = RBA::ICplxTrans.from_trans(RBA::CplxTrans.new)
 
+  # For each instance placed in cell, write definition
   cv.cell.each_inst do |inst|
     box = inst.bbox.transformed_cplx(itrans)
     width = (box.width*dbu*scale/1000)
@@ -29,15 +30,15 @@ def print_image_definitions(file, cv, mask_name)
     y = box.center.y*dbu*scale/1000
 
     
-     job_file_text = "START_SECTION IMAGE_DEFINITION\n"
+    job_file_text = "START_SECTION IMAGE_DEFINITION\n"
     job_file_text += "\tIMAGE_ID                                      \"#{inst.cell.basic_name}\"\n"
-     job_file_text += "\tRETICLE_ID                                    \"#{mask_name}\"\n"
+    job_file_text += "\tRETICLE_ID                                    \"#{mask_name}\"\n"
     job_file_text += "\tIMAGE_SIZE                                    #{"%06f"  % width} #{"%06f"  %  height}\n"
-     job_file_text +="\tIMAGE_SHIFT                                  #{"%06f"  % x} #{"%06f"  % y}\n"
+    job_file_text += "\tIMAGE_SHIFT                                  #{"%06f"  % x} #{"%06f"  % y}\n"
     job_file_text += "\tMASK_SIZE                                      #{"%06f"  % width} #{"%06f"  %  height}\n"
     job_file_text += "\tMASK_SHIFT                                    #{"%06f"  % x} #{"%06f"  % y}\n"
     job_file_text += "\tVARIANT_ID                                    \"\"\n"
- job_file_text += "END_SECTION\n\n"
+    job_file_text += "END_SECTION\n\n"
     puts job_file_text
     file.puts(job_file_text)
   end
@@ -55,14 +56,17 @@ $write_instances = MenuAction.new("Write Instances to File", "") do
     raise "No view selected"
   end
 
-  # get the current cell view (the one selected in the hierarchy browser)
+  # get the current cell view (Make sure you're running this on your mask)
   cv = lv.cellview(lv.active_cellview_index)
+  if (cv.cell.name.downcase != "mask")
+    raise "Make your \"Mask\" cell your current view."
+  end
   if !cv.is_valid?
     raise "No layout selected"
   end
 
   
-  
+  # get parameters for job file
   mask_name = RBA::InputDialog.get_string("Mask Name", "Specify the reticle ID", "mask")
   filename = RBA::FileDialog.ask_save_file_name("ASML Job file", "test.asml", "ASML files (*.asml *.txt)")
   
