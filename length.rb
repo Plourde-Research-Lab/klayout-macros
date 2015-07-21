@@ -41,7 +41,7 @@ $calc_freq = MenuAction.new( "Compute frequency of selected CPW", "Ctl + L" ) do
   end
 
   total_length = 0.0
-  
+
   #CPW consists of  6um wide polygons
   cpw_width = 6.0
 
