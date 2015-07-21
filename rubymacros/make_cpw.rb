@@ -15,7 +15,7 @@ private
 end
 
 $make_cpw = MenuAction.new( "Make CPW", "" ) do 
-  app = Application.instance
+  app = RBA::Application.instance
   mw = app.main_window
   lv = mw.current_view
   raise "No view selected" if lv.nil?
@@ -35,9 +35,9 @@ $make_cpw = MenuAction.new( "Make CPW", "" ) do
   
       if !obj.is_cell_inst?
       # Define new paths
-       inner = Path.new()
-       outer = Path.new()
-       keepout = Path.new()
+       inner = RBA::Path.new()
+       outer = RBA::Path.new()
+       keepout = RBA::Path.new()
        inner.assign(obj.shape.path)
        outer.assign(obj.shape.path)
        keepout.assign(obj.shape.path)
