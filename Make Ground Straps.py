@@ -85,7 +85,6 @@ def make_gnd_straps():
     #pya.MessageBox.info("Test", "It worked bitches", pya.MessageBox.b_ok())
     
 x = MenuAction("Make Ground Straps", "", make_gnd_straps)
-x.triggered()
 
 app = pya.Application.instance()
 mw = app.main_window()

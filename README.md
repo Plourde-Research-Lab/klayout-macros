@@ -1,5 +1,5 @@
-# klayout-macros
-Collection of macros to help with chip design in Layout
+# KLayout Macros
+Collection of python macros to help with chip design in KLayout
 
 
 To use, 
