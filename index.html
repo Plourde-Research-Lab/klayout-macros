@@ -1,56 +1,99 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en-us">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta charset="UTF-8">
     <title>Klayout-macros by calebjordan</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-light.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>Klayout-macros</h1>
-        <p>Collection of macros to help with chip design in Layout</p>
+    <section class="page-header">
+      <h1 class="project-name">Klayout-macros</h1>
+      <h2 class="project-tagline">Collection of macros to help with chip design in KLayout</h2>
+      <a href="https://github.com/calebjordan/klayout-macros" class="btn">View on GitHub</a>
+      <a href="https://github.com/calebjordan/klayout-macros/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/calebjordan/klayout-macros/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-        <p class="view"><a href="https://github.com/calebjordan/klayout-macros">View the Project on GitHub <small>calebjordan/klayout-macros</small></a></p>
+    <section class="main-content">
+      <h1>
+<a id="klayout-macros" class="anchor" href="#klayout-macros" aria-hidden="true"><span class="octicon octicon-link"></span></a>KLayout Macros</h1>
 
+<p>Collection of python and ruby macros to help with chip design in KLayout</p>
 
-        <ul>
-          <li><a href="https://github.com/calebjordan/klayout-macros/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/calebjordan/klayout-macros/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/calebjordan/klayout-macros">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h1>
-<a id="klayout-macros" class="anchor" href="#klayout-macros" aria-hidden="true"><span class="octicon octicon-link"></span></a>klayout-macros</h1>
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
 
-<p>Collection of macros to help with chip design in Layout</p>
+<ul>
+<li>
+<p>Coplanar Waveguide (CPW) Tools</p>
 
-<p>To use, </p>
+<ul>
+<li>
+<strong>Path to CPW</strong> rubymacros/make_cpw.rb</li>
+<li>
+<strong>CPW Resonator Frequency Calculation</strong> pymacros/calc_freq.py</li>
+<li>
+<strong>Create Grounding Straps along CPW</strong> pymacros/Make Ground Straps.py</li>
+</ul>
+</li>
+<li>
+<p>Fabrication Tools</p>
 
-<p>Download the KLayout Python Integration Preview.</p>
+<ul>
+<li>
+<strong>Write Job File for ASML Stepper</strong> In progress.</li>
+</ul>
+</li>
+</ul>
 
-<p><a href="http://www.klayout.de/python_preview.html">http://www.klayout.de/python_preview.html</a></p>
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
 
-<p>Pull down this repository into the macros folder.</p>
+<ul>
+<li>Download the <a href="http://www.klayout.de/python_preview.html">KLayout Python Integration Preview.</a>
+</li>
+<li>
+<p>Make sure you have Python 3.4 installed on your system, with full numpy and scipy packages. Using Anaconda to create a py34 environment is pretty easy, and you can install the full Anaconda suite (with Numpy and Scipy) automatically. </p>
 
-<pre><code>cd C:\Program Files\KLayout (64bit)\pymacros
-git clone https://github.com/calebjordan/klayout-macros
+<ul>
+<li>If you're running Anaconda with Python 2.7<br>
+</li>
+</ul>
+
+<pre><code>conda create py34 anaconda
 </code></pre>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/calebjordan">calebjordan</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+</li>
+<li>
+<p>Clone this repository</p>
+
+<pre><code>git clone https://github.com/calebjordan/klayout-macros
+</code></pre>
+</li>
+<li><p>In KLayout Macros Development Window (F5), right click in the list of python folders, and click 'Add Location'. Add the 'pymacros' folder. </p></li>
+<li>Do the same for the rubymacros in the ruby tab. </li>
+<li>
+<p>In 'pymacros/Python Startup.py', change the path names to correspond to your py34 environment. For instance, </p>
+
+<pre><code>sys.path.append("c:/Anaconda/envs/py34/lib")
+sys.path.append("c:/Anaconda/envs/py34/lib/site-packages")
+</code></pre>
+</li>
+<li>Restart KLayout. Most functions should appear in 'Tools' menu. </li>
+</ul>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/calebjordan/klayout-macros">Klayout-macros</a> is maintained by <a href="https://github.com/calebjordan">calebjordan</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
+
+    </section>
+
+  
   </body>
 </html>
+
