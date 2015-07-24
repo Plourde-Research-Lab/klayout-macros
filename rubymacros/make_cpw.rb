@@ -1,6 +1,4 @@
 # $description: Make CPW out of Path
-# $autorun
-# $show-in-menu
 class MenuAction < RBA::Action
   def initialize( title, shortcut, &action ) 
     self.title = title

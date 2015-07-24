@@ -29,7 +29,7 @@ def make_gnd_straps():
         raise Exception("No view selected")
     
     # Ground Strap parameters
-    d = 100/dbu #100 um separation
+    d = 300/dbu #100 um separation
     l = 22/dbu #22 um long
     w = 8/dbu #8um wide
     gs_layer = ly.layer(2,0)

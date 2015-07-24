@@ -5,7 +5,7 @@ from numpy import sqrt, sinh, log, pi
 
 class cpw:
     def __init__(self, w=10., s=6., t=.1, h=500., l=1000., e1=11.6,
-                 material="nb", tgdelta=1e-8):
+                 material='Niobium', tgdelta=1e-8):
         self.w = w*1e-6
         self.s = s*1e-6
         self.t = t*1e-6
@@ -15,10 +15,10 @@ class cpw:
         self.tgdelta = tgdelta
         self.material = material
 
-        if material == "al":
+        if material == 'Aluminum':
             self.Tc = 1.23
             self.rho = 4e-9
-        elif material == 'nb':
+        elif material == 'Niobium':
             self.Tc = 8
             self.rho = 4e-9
 

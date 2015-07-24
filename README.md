@@ -7,6 +7,14 @@ Collection of python and ruby macros to help with chip design in KLayout
     - **Path to CPW** rubymacros/make_cpw.rb
     - **CPW Resonator Frequency Calculation** pymacros/calc_freq.py
     - **Create Grounding Straps along CPW** pymacros/Make Ground Straps.py
+* FastHenry Integration
+    - Generates .inp from selected shapes(paths only for now), calls FastHenry, and displays resulting Zc.mat in a dialog box.
+    - FastHenry3.0 needs to be available in your path.
+    - **In progress** 
+        * Boxes as well as paths
+        * Ground Planes
+        * Editable Material parameters
+        * Finer control over parameters
 
 * Fabrication Tools
     - **Write Job File for ASML Stepper** In progress.

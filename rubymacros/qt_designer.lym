@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category/>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>ruby</interpreter>
+ <dsl-interpreter-name/>
+ <text>module MyMacro
+ 
+  include RBA
+
+  # load the UI file
+  # TODO: this is how to load a file from a path next to the .lym file
+  # ui_file = QFile::new(QFileInfo::new($0).dir.filePath("MyDialog.ui"))
+  # Initially we use the sample file provided as resoure
+  ui_file = QFile::new("../pymacros/CPW.ui")
+  ui_file.open(QIODevice::ReadOnly)
+  dialog = QFormBuilder::new.load(ui_file, Application::instance.main_window)
+  ui_file.close
+  
+  dialog.setup
+  dialog.exec  
+
+end
+</text>
+</klayout-macro>
