@@ -24,8 +24,7 @@ class segment:
         self.height = height
 
     def __repr__(self):
-        return "E{} N{} N{} w={} h={}\n".
-        format(self.label, self.point1.label,
+        return "E{} N{} N{} w={} h={}\n".format(self.label, self.point1.label,
                self.point2.label, self.width, self.height)
 
 
@@ -51,15 +50,18 @@ class shape:
 
 
 class FastHenryFile():
-    def __init__(self, filename='test', comments='', pen_depth=85e-9,
-                 units="um", nwinc=10, nhinc=10):
+    def __init__(self, filename='test', comments='', pen_depth=85e-3,
+                 units="um", nwinc=10, nhinc=10, start_freq = 1, stop_freq = 1, numpts = 1):
         self.filename = str(filename) + ".inp"
         self.path = join(abspath(curdir), self.filename)
         self.comments = str(comments)
         self.pen_depth = float(pen_depth)
         self.units = units
-        self.nwinc = nwinc
-        self.nhinc = nhinc
+        self.nwinc = int(nwinc)
+        self.nhinc = int(nhinc)
+        self.start_freq = float(start_freq)
+        self.stop_freq = float(stop_freq)
+        self.numpts = float(numpts)
 
         # Elements
         self.points = []
@@ -76,7 +78,7 @@ class FastHenryFile():
 
     def footer(self):
         string = "\n* Define Frequency\n"
-        string += ".freq fmin=1 fmax=1 ndec=1\n"
+        string += ".freq fmin={} fmax={} ndec={}\n".format(self.start_freq, self.stop_freq, self.numpts)
         string += ".end"
         return string
 
@@ -89,6 +91,7 @@ class FastHenryFile():
 
     def params(self):
         string = "\n*------------ Params  ------------\n"
+        string +=".Units um\n"
         string += "\n.default lambda={}\n\n".format(self.pen_depth)
         string += ".default nwinc={} nhinc={}\n".format(self.nwinc, self.nhinc)
         return string

@@ -22,7 +22,7 @@
   # TODO: this is how to load a file from a path next to the .lym file
   # ui_file = QFile::new(QFileInfo::new($0).dir.filePath("MyDialog.ui"))
   # Initially we use the sample file provided as resoure
-  ui_file = QFile::new("../pymacros/CPW.ui")
+  ui_file = QFile::new("./pymacros/CPW.ui")
   ui_file.open(QIODevice::ReadOnly)
   dialog = QFormBuilder::new.load(ui_file, Application::instance.main_window)
   ui_file.close

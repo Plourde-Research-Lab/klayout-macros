@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>import pya
+import types
+from os import path, listdir
+from cpw_design import cpw
+
+# Create the form object from the uic file:
+
+#macros_folder = path.join("C", "Users", "caleb", "Development", "klayout-macros", "pymacros")
+ui_path = path.join("Z:\Development\KLayout Macros\pymacros", "cpw.ui")
+
+ui_file = pya.QFile(ui_path)
+parent = pya.Application.instance().main_window()
+ui_file.open(pya.QIODevice.ReadOnly)
+form = pya.QFormBuilder().load(ui_file, parent)
+ui_file.close()
+
+def update(self):
+    self.cpw = cpw(
+        material=self.materialInput.currentText,
+        w=float(self.wInput.text),
+        s=float(self.gInput.text),
+        t=float(self.tInput.text),
+        h=float(self.hInput.text),
+        l=float(self.lengthInput.text),
+        e1=float(self.epsInput.text)
+        )
+    self.k0Label.setText("{:.3e}".format(self.cpw.k0()))
+    self.llLabel.setText("{:.3e}".format(self.cpw.Ll()))
+    self.clLabel.setText("{:.3e}".format(self.cpw.Cl()))
+    self.z0Label.setText("{:.3e}".format(self.cpw.z0()))
+    self.tcLabel.setText("{:.3e}".format(self.cpw.Tc))
+    self.rhoLabel.setText("{:.3e}".format(self.cpw.rho))
+    self.lambdaLabel.setText("{:.3e}".format(self.cpw.l0))
+    self.lkLabel.setText("{:.3e}".format(self.cpw.Llk()))
+    self.lLabel.setText("{:.3e}".format(self.cpw.L()))
+    self.cLabel.setText("{:.3e}".format(self.cpw.C()))
+    self.rLabel.setText("{:.3e}".format(self.cpw.R()))
+    self.qintLabel.setText("{:.3e}".format(self.cpw.Qint()))
+    self.w0Label.setText("{:.3e}".format(self.cpw.wn()))
+    self.f0Label.setText("{:.3e}".format(self.cpw.fn()*1e-9))
+
+update(form)
+
+form.epsInput.editingFinished(types.MethodType(update, form))
+form.lengthInput.editingFinished(types.MethodType(update, form))
+form.wInput.editingFinished(types.MethodType(update, form))
+form.gInput.editingFinished(types.MethodType(update, form))
+form.hInput.editingFinished(types.MethodType(update, form))
+form.tInput.editingFinished(types.MethodType(update, form))
+
+form.exec_()
+
+</text>
+</klayout-macro>
