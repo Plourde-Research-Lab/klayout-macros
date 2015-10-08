@@ -68,6 +68,7 @@ class FastHenryFile():
         self.segments = []
         self.groundplanes = []
         self.shapes = []
+        print(self.path)
 
     def header(self):
         string = "* {}\n".format(self.filename)
@@ -107,13 +108,14 @@ class FastHenryFile():
         return string
 
     def print_to_file(self):
-        print('Printing{}..\n'.format(self.filename))
+        print('Printing {}..\n'.format(self.filename))
         with open(self.filename, 'w') as f:
             f.write(str(self))
         print("Done\n")
 
     def call_fh(self):
-        out = subprocess.check_output(('fasthenry.exe', self.path))
+        print(self.path)
+        out = subprocess.check_output(['fasthenry.exe', self.path])
         f = open('Zc.mat', 'r')
         result = f.read()
         return out, result

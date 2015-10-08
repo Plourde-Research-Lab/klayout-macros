@@ -69,8 +69,8 @@ def runInFastHenry():
     dbu = ly.dbu
     
     # Setup GUI
-    ui_path = join("Z:\Development\KLayout Macros\pymacros", "FastHenryGui.ui")
-
+    ui_path = join("C:\\Users\Caleb\Development\klayout-macros\pymacros", "FastHenryGui.ui") 
+ 
     ui_file = pya.QFile(ui_path)
     parent = pya.Application.instance().main_window()
     ui_file.open(pya.QIODevice.ReadOnly)
