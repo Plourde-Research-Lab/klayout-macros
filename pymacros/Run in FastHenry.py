@@ -9,7 +9,6 @@ from fasthenry import *
 
 sys.stderr = sys.stdout
 
-
 class MenuAction(pya.Action):
     def __init__(self, title, shortcut, action):
         self.title = title
@@ -34,19 +33,24 @@ def writeInputFile(self, clicked):
     
     fh = FastHenryFile(nwinc=nwincInput, nhinc=nhincInput, pen_depth=85e-3,
                                 start_freq=startFreq, stop_freq=stopFreq, numpts=numPts)
+    i=0
     for obj in selected_objects:
         if obj.shape().is_path() and not obj.is_cell_inst():
-            pts = []
-            pth = obj.shape().path
+          name = obj.shape().property('1')
+          if name is None:
+             name = str(i)
+             i = i+1
+          pts = []
+          pth = obj.shape().path
             # create point object for each point
-            for i, pt in enumerate(pth.each_point()):
-                p = point(obj.shape().property('1') + str(i),
+          for i, pt in enumerate(pth.each_point()):
+                p = point(name + str(i),
                           float(pt.x*dbu),
                           float(pt.y*dbu))
                 pts.append(p)
             # create shape
-            sh = shape(obj.shape().property('1'), pts, width=pth.width*dbu)
-            fh.shapes.append(sh)
+          sh = shape(name, pts, width=pth.width*dbu)
+          fh.shapes.append(sh)
     
     self.inputFilePreview.setText(str(fh))
     
@@ -86,9 +90,15 @@ def runInFastHenry():
         raise Exception("No view selected")
 
     selected_objects = lv.each_object_selected()
+    i=0
     for obj in selected_objects:
         if obj.shape().is_path() and not obj.is_cell_inst():
-            form.traceComboBox.addItem(obj.shape().property('1'))
+            name = obj.shape().property('1')
+            if name is None:
+              name = str(i)
+              i = i+1
+            print(name)
+            form.traceComboBox.addItem(name)
     
     form.exec_()
 
