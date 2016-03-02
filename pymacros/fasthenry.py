@@ -1,7 +1,6 @@
 import time
 import subprocess
 from os.path import join, curdir, abspath
-from numpy import loadtxt
 
 
 class point:
