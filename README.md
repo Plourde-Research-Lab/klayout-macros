@@ -21,12 +21,13 @@ Collection of python and ruby macros to help with chip design in KLayout
 
 ## Installation
 
-* Download the [KLayout Python Integration Preview.](http://www.klayout.de/python_preview.html)
+* Download [KLayout](http://www.klayout.de/build.html)
 * Make sure you have Python 3.4 installed on your system, with full numpy and scipy packages. Using Anaconda to create a py34 environment is pretty easy, and you can install the full Anaconda suite (with Numpy and Scipy) automatically. 
     - If you're running Anaconda with Python 2.7  
     ```
-    conda create py34 anaconda
+    conda create --name py34 python=3.4 anaconda
     ```
+    This will create an environment containing a Python 3.4 installataion and will also install all anaconda packages.
 
 * Clone this repository
     ```
