@@ -43,15 +43,15 @@ def make_cpw():
     selected_objects = lv.each_object_selected()
     print("x")
     for obj in selected_objects:
-        if obj.shape().is_path() and not obj.is_cell_inst():
+        if obj.shape.is_path() and not obj.is_cell_inst():
             inner = pya.Path()
             outer = pya.Path()
             keepout = pya.Path()
-            print(obj.shape().path)
+            print(obj.shape.path)
             
-            inner = obj.shape().path
-            outer = obj.shape().path
-            keepout = obj.shape().path
+            inner = obj.shape.path
+            outer = obj.shape.path
+            keepout = obj.shape.path
             
             #Adjust widths
             inner.width = center_width

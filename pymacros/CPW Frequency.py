@@ -43,8 +43,8 @@ def calc_freq():
     selected_objects = lv.each_object_selected()
     
     for obj in selected_objects:
-        if obj.shape().is_path() and not obj.is_cell_inst():
-          shape = obj.shape()
+        if obj.shape.is_path() and not obj.is_cell_inst():
+          shape = obj.shape
           polygon = shape.polygon
           a = polygon.area()
           m = obj.trans().mag * ly.dbu
@@ -54,7 +54,7 @@ def calc_freq():
           total_length -= (shape.path.num_points()-2)*delta_r
           
     
-    freq = str(cpw(l=total_length).f0()*1e-9) + " GHz"
+    freq = str(cpw(l=total_length).fn()*1e-9) + " GHz"
     pya.MessageBox().info("Frequency", freq, pya.MessageBox().b_ok())
 
 

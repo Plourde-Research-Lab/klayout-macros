@@ -52,7 +52,7 @@ class FastHenryFile():
     def __init__(self, filename='test', comments='', pen_depth=85e-3,
                  units="um", nwinc=10, nhinc=10, start_freq = 1, stop_freq = 1, numpts = 1):
         self.filename = str(filename) + ".inp"
-        self.path = join(abspath(curdir), self.filename)
+        self.path = join('/Users/caleb/Development/klayout-macros/pymacros', self.filename)
         self.comments = str(comments)
         self.pen_depth = float(pen_depth)
         self.units = units
@@ -107,14 +107,19 @@ class FastHenryFile():
         return string
 
     def print_to_file(self):
-        print('Printing {}..\n'.format(self.filename))
-        with open(self.filename, 'w') as f:
+        print('Printing {}..\n'.format(self.path))
+        with open(self.path, 'w') as f:
             f.write(str(self))
         print("Done\n")
 
     def call_fh(self):
         print(self.path)
-        out = subprocess.check_output(['fasthenry.exe', self.path])
+        out = subprocess.check_output(['fasthenry', self.path])
         f = open('Zc.mat', 'r')
         result = f.read()
         return out, result
+
+    def call_fastHenry(self):
+      with Popen(["fasthenry", self.path], stdout=PIPE, bufsize=1, universal_newlines=True) as p:
+      for line in p.stdout:
+          print(line, end='')

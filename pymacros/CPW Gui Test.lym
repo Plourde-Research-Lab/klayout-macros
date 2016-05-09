@@ -22,7 +22,8 @@ from cpw_design import cpw
 # Create the form object from the uic file:
 
 #macros_folder = path.join("C", "Users", "caleb", "Development", "klayout-macros", "pymacros")
-ui_path = path.join("Z:\Development\KLayout Macros\pymacros", "cpw.ui")
+ui_path = path.join("/Users/caleb/Development/klayout-macros/pymacros", "cpw.ui")
+print(os.listdir('.'))
 
 ui_file = pya.QFile(ui_path)
 parent = pya.Application.instance().main_window()

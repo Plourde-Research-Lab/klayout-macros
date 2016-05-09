@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>true</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>from pya import *
+
+"""
+This is a library of P-Cells for Coplanar, Grounded Transmon Qubits
+- Caleb Howington 
+- Syracuse University
+- Spring 2016
+"""
+
+class xmon(PCellDeclarationHelper):
+
+  def __init__(self):
+
+    # Important: initialize the super class
+    super(xmon, self).__init__()
+
+    # declare the parameters
+    # i.e. self.param("l", self.TypeLayer, "Layer", default = LayerInfo(1, 0))
+    #      self.param("s", self.TypeShape, "", default = DPoint(0, 0))
+    self.param("l", self.TypeDouble, "Length of arm (L)", default=130)
+    self.param("s", self.TypeDouble, "Width of Center Conductor (S)", default=8)
+    self.param("w", self.TypeDouble, "Width of spacing between conductor and ground (W)", default=4)
+    self.param("metalLayer", self.TypeLayer, "Metal Layer", default=LayerInfo(1, 1))
+    self.param("noMetalLayer", self.TypeLayer, "Removed Metal Layer", default=LayerInfo(1, 0))
+    self.param("bboxLayer", self.TypeLayer, "Bounding Box Layer", default=LayerInfo(1, 3))
+     
+  def display_text_impl(self):
+    # Provide a descriptive text for the cell
+    return "XMON(L={},S={},W={})".format(self.l, self.s, self.w)
+  
+  def coerce_parameters_impl(self):
+    # TODO: use x to access parameter x and set_x to modify it's value 
+    pass
+    
+  def produce_impl(self):
+    # TODO: produce the cell content 
+    # i.e. self.cell().shapes(self.l_layer).insert(Polygon(...))
+    dbu = self.layout.dbu
+    
+    ## Make X
+    vert = Path([Point(0, self.l/dbu), Point(0, -self.l/dbu)], self.s/dbu)
+    horz = Path([Point(self.l/dbu, 0), Point(-self.l/dbu, 0)], self.s/dbu)
+      
+    ep = EdgeProcessor()
+    a = [vert.polygon()]
+    b = [horz.polygon()]
+    x = ep.boolean_p2p(a, b, EdgeProcessor().ModeOr, True, False)
+    inner = [x]
+    ## Make spacing
+    
+    vert_s = Path([Point(0, self.l/dbu + self.w/dbu), Point(0, -self.l/dbu-self.w/dbu)], self.s/dbu + 2*self.w/dbu)
+    horz_s = Path([Point(self.l/dbu + self.w/dbu, 0), Point(-self.l/dbu-self.w/dbu, 0)], self.s/dbu + 2*self.w/dbu)
+    outer = [vert_s.polygon(), horz_s.polygon()]
+    
+    ## Make bounding box
+    bbox = Box(Point(-(self.l+self.w)/dbu, -(self.l+self.w)/dbu), Point((self.l+self.w)/dbu, (self.l+self.w)/dbu))
+    
+    ## Cut X out of Spacing
+    ep = EdgeProcessor()
+    #groundPlane = ep.boolean_p2p(outer, inner, EdgeProcessor().ModeANotB, True, False)
+    spacing = ep.boolean_p2p(outer, inner, EdgeProcessor().ModeANotB, True, False)
+
+    ## Push x and cutout into metal layer
+    ## and push bounding box into bounding box layer
+    for xi in x:
+      self.cell.shapes(self.metalLayer_layer).insert(xi)
+      
+    for p in spacing:
+      self.cell.shapes(self.noMetalLayer_layer).insert(p)
+    
+    self.cell.shapes(self.bboxLayer_layer).insert(bbox)
+    
+  # optional:
+  # def can_create_from_shape_impl(self):
+  #   TODO: determine if we have a shape that we can use to derive the 
+  #   PCell parameters from and return true in that case
+  # 
+  # optional:
+  # def parameters_from_shape_impl(self):
+  #   TODO: change parameters using set_x to reflect the parameter for the
+  #   given shape
+  # 
+  # optional:
+  # def transformation_from_shape_impl(self):
+  #   TODO: return a RBA::Trans object for the initial transformation of
+  #   the instance
+  
+# TODO: add more PCell classes ..
+
+# The PCell library declaration
+# A PCell library must be declared by deriving a custom class from RBA::Library.
+# The main purpose of this class is to provide the PCell declarations and to register itself
+# with a proper name.
+# TODO: change the class name
+
+class tmon(PCellDeclarationHelper):
+  def __init__(self):
+
+    # Important: initialize the super class
+    super(tmon, self).__init__()
+
+    # declare the parameters
+    # i.e. self.param("l", self.TypeLayer, "Layer", default = LayerInfo(1, 0))
+    #      self.param("s", self.TypeShape, "", default = DPoint(0, 0))
+    self.param("l", self.TypeDouble, "Length of top (L)", default=260)
+    self.param("h", self.TypeDouble, "Height of T (h)", default=260)
+    self.param("s", self.TypeDouble, "Width of Center Conductor (S)", default=8)
+    self.param("w", self.TypeDouble, "Width of spacing between conductor and ground (W)", default=4)
+    
+    self.param("looph", self.TypeDouble, "Height of Squid Loop", default = 12)
+    self.param("loopw", self.TypeDouble, "Width of Squid Loop", default = 50)
+    self.param("loopt", self.TypeDouble, "Thickness of Loop", default = 1)
+    
+    self.param("boundingbox", self.TypeDouble, "Bounding Box Size (edge)", default = 500)
+    self.param("metalLayer", self.TypeLayer, "Metal Layer", default=LayerInfo(1, 1))
+    self.param("noMetalLayer", self.TypeLayer, "Removed Metal Layer", default=LayerInfo(1, 0))
+    self.param("bboxLayer", self.TypeLayer, "Bounding Box Layer", default=LayerInfo(1, 3))
+     
+  def display_text_impl(self):
+    # Provide a descriptive text for the cell
+    return "TMON(L={},H={},S={},W={})".format(self.l, self.h, self.s, self.w)
+  
+  def coerce_parameters_impl(self):
+    # TODO: use x to access parameter x and set_x to modify it's value 
+    pass
+    
+  def produce_impl(self):
+    # TODO: produce the cell content 
+    # i.e. self.cell().shapes(self.l_layer).insert(Polygon(...))
+    dbu = self.layout.dbu
+    
+    bbw = self.boundingbox/2.
+    y0 = bbw
+    
+    horzy = y0 - self.w - self.s/2
+    
+    verty1 = y0 - self.w-self.s
+    verty2 = verty1 - self.h
+    
+    ## Make T
+    vert = Path([Point(0, verty1/dbu), Point(0, verty2/dbu)], self.s/dbu)
+    horz = Path([Point(self.l/2/dbu, horzy/dbu), Point(-self.l/2/dbu, horzy/dbu)], self.s/dbu)
+      
+    ep = EdgeProcessor()
+    a = [vert.polygon()]
+    b = [horz.polygon()]
+    x = ep.boolean_p2p(a, b, EdgeProcessor().ModeOr, True, False)
+    
+    ## Make SQUID Loop
+    points = []
+    
+    x0 = -10/2
+    y0 = y0 -self.h - self.w - self.s - self.w
+    x1 = (-self.loopw/2)
+    y1 = y0 - self.looph
+    points.append(Point((x0+1)/dbu, y0/dbu))
+    points.append(Point(x1/dbu, (y0)/dbu))
+    points.append(Point(x1/dbu, y1/dbu))
+    points.append(Point(-x1/dbu, y1/dbu))
+    points.append(Point(-x1/dbu, y0/dbu))
+    points.append(Point((-x0-1)/dbu, y0/dbu))
+    
+    loop = Path(points, self.loopt/dbu)
+    x.append(loop.polygon())
+    
+    ## Make Flux Line
+    fluxpoints = []
+    fluxpoints.append(Point( 0, (-bbw)/dbu ))
+    fluxpoints.append(Point( 0, (-bbw+ 50.)/dbu ))
+    fluxpoints.append(Point((x1-self.w)/dbu, (-bbw+ 50.)/dbu ))
+    fluxpoints.append(Point( (x1-self.w)/dbu, (y1-self.loopt)/dbu))
+    #fluxpoints.append(Point( (x1+5)/dbu, (y1-self.loopt)/dbu))
+    flux = Path(fluxpoints, self.loopt/dbu)
+    x.append(flux.polygon())
+    
+    ## Make spacing
+    vert_s = Path([Point(0, verty1/dbu), Point(0, (verty2 - self.w)/dbu)], self.s/dbu+2*self.w/dbu)
+    horz_s = Path([Point(self.l/2/dbu+self.w/dbu, horzy/dbu), Point(-self.l/2/dbu-self.w/dbu, horzy/dbu)], self.s/dbu+2*self.w/dbu)
+    #vert_s = Path([Point(0, self.l/dbu + self.w/dbu), Point(0, -self.l/dbu-self.w/dbu)], self.s/dbu + 2*self.w/dbu)
+    #horz_s = Path([Point(self.l/dbu + self.w/dbu, 0), Point(-self.l/dbu-self.w/dbu, 0)], self.s/dbu + 2*self.w/dbu)
+    outer = [vert_s.polygon(), horz_s.polygon()]
+    
+    ## Make Spacing for SQUID Loop
+    x2 = (x1-self.w-self.loopt/2.)
+    loopSpacing = Box(Point(x2/dbu, (y1+self.loopt/2.)/dbu), Point(-x2/dbu, (y0+self.loopt/2.+self.w)/dbu))
+    outer.append(Polygon(loopSpacing))
+    
+    ## Make Spacing for Flux Line
+    fluxspacing = Path(fluxpoints, 2.2*self.loopt/dbu)
+    outer.append(fluxspacing.polygon())
+    
+    ## Make bounding box
+    #bbox = Box(Point(-(self.l/2.+self.w)/dbu, -(self.h/2.+self.w)/dbu), Point((self.l/2.+self.w)/dbu, (self.h/2.+self.s+self.w)/dbu))
+    bbox = Box(Point(-bbw/dbu, -bbw/dbu), Point(bbw/dbu, bbw/dbu))
+    ## Cut metal out of spacing
+    ep = EdgeProcessor()
+    spacing = ep.boolean_p2p(outer, x, EdgeProcessor().ModeANotB, True, False)
+
+    ## Push x and cutout into metal layer
+    ## and push bounding box into bounding box layer
+    for xi in x:
+      self.cell.shapes(self.metalLayer_layer).insert(xi)
+    
+    self.cell.shapes(self.metalLayer_layer).insert(loop)
+
+    for p in spacing:
+      self.cell.shapes(self.noMetalLayer_layer).insert(p)
+
+    #self.cell.shapes(self.noMetalLayer_layer).insert(loopSpacing)
+
+    self.cell.shapes(self.bboxLayer_layer).insert(bbox)
+    
+    
+class tmonV2(PCellDeclarationHelper):
+  def __init__(self):
+
+    # Important: initialize the super class
+    super(tmonV2, self).__init__()
+
+    # declare the parameters
+    # i.e. self.param("l", self.TypeLayer, "Layer", default = LayerInfo(1, 0))
+    #      self.param("s", self.TypeShape, "", default = DPoint(0, 0))
+    self.param("l", self.TypeDouble, "Length of Box (L)", default=260)
+    self.param("s", self.TypeDouble, "Width of Center Conductor (W)", default=8)
+    self.param("w", self.TypeDouble, "Width of spacing between conductor and ground on CPW Side(S)", default=4)
+    self.param("s2", self.TypeDouble, "Width of spacing on other 3 sides (S2)", default = 30)
+    #self.param("looph", self.TypeDouble, "Height of Squid Loop", default = 12)
+    #self.param("loopw", self.TypeDouble, "Width of Squid Loop", default = 50)
+    self.param("biast", self.TypeDouble, "Thickness of Bias Line", default = 1)
+    
+    self.param("boundingbox", self.TypeDouble, "Bounding Box Size (edge)", default = 500)
+    self.param("metalLayer", self.TypeLayer, "Metal Layer", default=LayerInfo(1, 1))
+    self.param("noMetalLayer", self.TypeLayer, "Removed Metal Layer", default=LayerInfo(1, 0))
+    self.param("bboxLayer", self.TypeLayer, "Bounding Box Layer", default=LayerInfo(1, 3))
+     
+  def display_text_impl(self):
+    # Provide a descriptive text for the cell
+    return "TMONV2(W={},S2={})".format(self.s, self.s2)
+  
+  def coerce_parameters_impl(self):
+    # TODO: use x to access parameter x and set_x to modify it's value 
+    pass
+    
+  def produce_impl(self):
+    # TODO: produce the cell content 
+    # i.e. self.cell().shapes(self.l_layer).insert(Polygon(...))
+    dbu = self.layout.dbu
+    
+    inner = []
+    outer = []
+    
+    ## Make Rect
+    
+    bbw = self.boundingbox/2.
+    y0 = bbw
+    
+    horzy = y0 - self.w - self.s/2
+    
+    horz = Path([Point(self.l/2/dbu, horzy/dbu), Point(-self.l/2/dbu, horzy/dbu)], self.s/dbu)
+    b = horz.polygon()
+    inner.append(b)
+      
+    
+    ## Make Flux Line
+    fluxpoints = []
+    
+    y1 = bbw-self.s2-self.s-self.w - self.biast
+    fluxpoints.append(Point( 0, (-bbw + 50)/dbu ))
+    fluxpoints.append(Point( 0, (y1-self.biast)/dbu))
+    fluxpoints.append(Point( (-self.biast*2.)/dbu, (y1-self.biast)/dbu))
+    flux = Path(fluxpoints, self.biast/dbu)
+    #inner.append(flux.polygon())
+    
+    ## Make Taper
+    x0 = -self.biast/2
+    y0 = (-bbw + 50)
+    points = []
+    points.append(Point(x0/dbu, y0/dbu))
+    points.append(Point((x0-.6*self.biast)/dbu, (y0)/dbu))
+    points.append(Point(-11./dbu, -bbw/dbu))
+    points.append(Point(-5./dbu, -bbw/dbu))
+    taper1 = Polygon(points)
+    #outer.append(taper1)
+    points = []
+    points.append(Point(-x0/dbu, y0/dbu))
+    points.append(Point(-(x0-.6*self.biast)/dbu, (y0)/dbu))
+    points.append(Point(11./dbu, -bbw/dbu))
+    points.append(Point(5./dbu, -bbw/dbu))
+    taper2 = Polygon(points)    
+    #outer.append(taper2)
+    
+    ## Make spacing
+    point1= Point((-self.l/2.-self.s2)/dbu, (bbw-self.w-self.s-self.s2)/dbu)
+    point2 = Point( (self.l/2.+self.s2)/dbu, (bbw)/dbu )
+    box_s = Box(point1, point2)
+    outer.append(Polygon(box_s))
+    
+    ## Make Spacing for SQUID Loop
+    #x2 = (x1-self.w-self.loopt/2.)
+    #loopSpacing = Box(Point(x2/dbu, (y1+self.loopt/2.)/dbu), Point(-x2/dbu, (y0+self.loopt/2.+self.w)/dbu))
+    #outer.append(Polygon(loopSpacing))
+    
+    ## Make Spacing for Flux Line
+    fluxspacing = Path(fluxpoints, 2.2*self.biast/dbu)
+    #outer.append(fluxspacing.polygon())
+    
+    ## Make bounding box
+    #bbox = Box(Point(-(self.l/2.+self.w)/dbu, -(self.h/2.+self.w)/dbu), Point((self.l/2.+self.w)/dbu, (self.h/2.+self.s+self.w)/dbu))
+    bbox = Box(Point(-bbw/dbu, -bbw/dbu), Point(bbw/dbu, bbw/dbu))
+    ## Cut metal out of spacing
+    ep = EdgeProcessor()
+    spacing = ep.boolean_p2p(outer, inner, EdgeProcessor().ModeANotB, True, False)
+
+    ## Push x and cutout into metal layer
+    ## and push bounding box into bounding box layer
+    for xi in inner:
+      self.cell.shapes(self.metalLayer_layer).insert(xi)
+    
+    #self.cell.shapes(self.metalLayer_layer).insert(loop)
+
+    for p in spacing:
+      self.cell.shapes(self.noMetalLayer_layer).insert(p)
+
+    #self.cell.shapes(self.noMetalLayer_layer).insert(loopSpacing)
+
+    self.cell.shapes(self.bboxLayer_layer).insert(bbox)
+    
+class PCellLib(Library):
+
+  def __init__(self):
+  
+    # TODO: change the description
+    self.description = "My planar qubit library"
+    
+    # register the PCell declarations
+    # TODO: change the names
+    self.layout().register_pcell("xmon", xmon())
+    self.layout().register_pcell("tmon", tmon())
+    self.layout().register_pcell("tmonV2", tmonV2())
+    # TODO: register more PCell declarations
+    
+    # register our library with the name "PCellLib"
+    # TODO: change the library name
+    self.register("planarQubitLib")
+    
+# instantiate and register the library
+# TODO: change the library name
+PCellLib()
+
+</text>
+</klayout-macro>

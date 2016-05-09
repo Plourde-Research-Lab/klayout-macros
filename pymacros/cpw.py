@@ -5,7 +5,7 @@ import sys
 
 from cpw_design import cpw
 
-form_class = uic.loadUiType('CPW.ui')[0]
+form_class = uic.loadUiType('cpw.ui')[0]
 
 
 class MyWindowClass(QtGui.QDialog, form_class):
