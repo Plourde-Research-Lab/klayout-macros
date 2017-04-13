@@ -4,7 +4,7 @@
 import pya
 import sys
 from datetime import datetime
-import pandas as pd
+#import pandas as pd
 import numpy as np
 sys.stderr = sys.stdout
 
@@ -71,8 +71,8 @@ def write_instances():
   cv = lv.cellview(lv.active_cellview_index())
   
   # get the current cell view (Make sure you're running this on your mask)
-  if (cv.cell.name.lower() != "mask"):
-    raise "Make your \"Mask\" cell your current view."
+  #if (cv.cell.name.lower() != "mask"):
+    #raise "Make your \"Mask\" cell your current view."
   
   if not cv.is_valid():
     raise "No layout selected"

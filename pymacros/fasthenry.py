@@ -108,7 +108,7 @@ class FastHenryFile():
 
     def print_to_file(self):
         print('Printing {}..\n'.format(self.path))
-        with open(self.path, 'w') as f:
+        with open(self.path, 'w') as df:
             f.write(str(self))
         print("Done\n")
 

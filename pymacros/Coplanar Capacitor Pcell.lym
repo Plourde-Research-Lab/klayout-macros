@@ -150,6 +150,77 @@ class CoplanarCap(PCellDeclarationHelper):
 
     self.cell.shapes(self.bboxLayer_layer).insert(bbox)
 
+
+
+class CPW(pya.PCellDeclarationHelper):
+  """
+  The PCell declaration for a CPW based on a path
+  """
+
+  def __init__(self):
+
+    # Important: initialize the super class
+    super(CPW, self).__init__()
+
+    # declare the parameters
+    self.param("layer", self.TypeLayer, "Layer", default = pya.LayerInfo(1, 0))
+    self.param("shape", self.TypeShape, "", default = pya.Path())
+    self.param("w", self.TypeDouble, "Center Conductor width", default = 0.1)
+    self.param("s", self.TypeInt, "Gap Width", default = 64)
+    self.param("name", self.TypeString, "Name", default= "cpw")
+    # this hidden parameter is used to determine whether the radius has changed
+    # or the "s" handle has been moved
+    self.param("length", self.TypeDouble, "Length", default=0.0, readonly=True)
+    self.param("frequency", self.TypeDouble, "Frequency", default = 0.0, readonly= True)
+    self.param("impedance", self.TypeDouble, "Impedance", default = 50., readonly = True)
+
+  def display_text_impl(self):
+    # Provide a descriptive text for the cell
+    return "CPW(L=" + str(self.length) + ",Name=" + str(self.name) + ")"
+
+  def coerce_parameters_impl(self):
+
+    # We employ coerce_parameters_impl to decide whether the handle or the
+    # numeric parameter has changed (by comparing against the effective
+    # radius ru) and set ru to the effective radius. We also update the
+    # numerical value or the shape, depending on which on has not changed.
+    rs = None
+
+  def can_create_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we can use any shape which
+    # has a finite bounding box
+    return self.shape.is_path()
+
+  def parameters_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
+    # bounding box width and layer
+    #self.shape = self.shape.bbox.width() * self.layout.dbu() / 2
+    pass
+    #self.l = self.layout.get_info(self.layer)
+
+  def transformation_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we use the center of the shape's
+    # bounding box to determine the transformation
+    return pya.Trans(self.shape.bbox().center())
+
+  def produce_impl(self):
+
+    # This is the main part of the implementation: create the layout
+
+    # fetch the parameters
+    # ru_dbu = self.ru / self.layout.dbu
+    # 
+    # # compute the circle
+    # pts = []
+    # da = math.pi * 2 / self.n
+    # for i in range(0, self.n):
+    #   pts.append(pya.Point.from_dpoint(pya.DPoint(ru_dbu * math.cos(i * da), ru_dbu * math.sin(i * da))))
+    # 
+    # # create the shape
+    print(self.shape)
+    newshape = pya.polygon(self.shape.polygon()).round_corners(95, 105, 100)
+    self.cell.shapes(self.layer).insert(newshape)
+    
 class CapLib(Library):
   """
   The library where we will put the PCell into 
@@ -162,6 +233,7 @@ class CapLib(Library):
     
     # Create the PCell declarations
     self.layout().register_pcell("CoplanarCap", CoplanarCap())
+    #self.layout().register_pcell("CPW", CPW())
     # That would be the place to put in more PCells ...
     
     # Register us with the name "MyLib".

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>true</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>import pya
+
+# PCell template
+# This macro template provides the framework for a PCell library
+
+# It is recommended to put PCell code into namespaces.
+# TODO: change the module name
+
+# The PCell declaration
+# Each PCell must provide a declaration. It is recommended to use the PCell name as the class name.
+# TODO: change the class name
+class RoundPath(pya.PCellDeclarationHelper):
+
+  def __init__(self):
+
+    # Important: initialize the super class
+    super(RoundPath, self).__init__()
+  
+    self.param("l", self.TypeLayer, "Layer", default = pya.LayerInfo(1, 0))
+    self.param("s", self.TypeShape, "", default = pya.DPath())
+    # declare the parameters
+    # i.e. self.param("l", self.TypeLayer, "Layer", default = pya.LayerInfo(1, 0))
+    #      self.param("s", self.TypeShape, "", default = pya.DPoint(0, 0))
+
+  def display_text_impl(self):
+    # Provide a descriptive text for the cell
+    return "Round Path"
+  
+  def coerce_parameters_impl(self):
+    # TODO: use x to access parameter x and set_x to modify it's value 
+    pass
+    
+  def can_create_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we can use any shape which 
+    # has a finite bounding box
+    return self.shape.is_path()  
+     
+  def parameters_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we set r and l from the shape's 
+    # bounding box width and layer
+    #self.r = self.shape.bbox.width() * self.layout.dbu() / 2
+    #self.s = pya.DPath(pts, self.shape.path.width)
+    self.s = pya.DPath.from_ipath(self.shape.path)
+    self.l = self.layout.get_info(self.layer)
+
+  def transformation_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we use the center of the shape's
+    # bounding box to determine the transformation
+    return pya.Trans(self.shape.bbox().center())
+
+  def produce_impl(self):
+    # TODO: produce the cell content 
+    # i.e. self.cell().shapes(self.l_layer).insert(pya.Polygon(...))
+    dbu = self.layout.dbu
+    print("dbu = " + str(dbu))
+    newpts = []
+    for pt in self.s.each_point():
+      print(pt)
+      newpts.append(pya.Point.from_dpoint(pt))
+      
+    newpath = pya.Path(newpts, self.s.width)
+    print(newpath)
+    
+    rounded = newpath.polygon().round_corners(95*dbu, 105*dbu, 100)
+    self.cell().shapes(self.l_layer).insert(rounded)
+
+
+  # optional:
+  # def can_create_from_shape_impl(self):
+  #   TODO: determine if we have a shape that we can use to derive the 
+  #   PCell parameters from and return true in that case
+  # 
+  # optional:
+  # def parameters_from_shape_impl(self):
+  #   TODO: change parameters using set_x to reflect the parameter for the
+  #   given shape
+  # 
+  # optional:
+  # def transformation_from_shape_impl(self):
+  #   TODO: return a RBA::Trans object for the initial transformation of
+  #   the instance
+
+# TODO: add more PCell classes ..
+
+# The PCell library declaration
+# A PCell library must be declared by deriving a custom class from RBA::Library.
+# The main purpose of this class is to provide the PCell declarations and to register itself
+# with a proper name.
+# TODO: change the class name
+class TestLib(pya.Library):
+
+  def __init__(self):
+  
+    # TODO: change the description
+    self.description = "Test library"
+    
+    # register the PCell declarations
+    # TODO: change the names
+    self.layout().register_pcell("RoundPath", RoundPath())
+    # TODO: register more PCell declarations
+    
+    # register our library with the name "PCellLib"
+    # TODO: change the library name
+    self.register("TestLib")
+    
+# instantiate and register the library
+# TODO: change the library name
+TestLib()
+
+</text>
+</klayout-macro>

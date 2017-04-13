@@ -1,5 +1,5 @@
 * test.inp
-* Generated on 14:28:36 04/27/16
+* Generated on 11:46:40 10/28/16
 
 *------------ Params  ------------
 .Units um
@@ -10,35 +10,34 @@
 
 *------------ Shapes  ------------
 
-* Shape line
-Nline0 x=5.0 y=-20.0 z=0
-Nline1 x=5.0 y=-12.0 z=0
-Nline2 x=-1.0 y=-12.0 z=0
-Nline3 x=-1.0 y=-10.0 z=0
-Nline4 x=11.0 y=-10.0 z=0
-Eline0 Nline0 Nline1 w=1.0 h=0.1
-Eline1 Nline1 Nline2 w=1.0 h=0.1
-Eline2 Nline2 Nline3 w=1.0 h=0.1
-Eline3 Nline3 Nline4 w=1.0 h=0.1
+* Shape W1
+NW10 x=-50.0 y=0.0 z=0
+NW11 x=50.0 y=0.0 z=0
+EW10 NW10 NW11 w=10.0 h=0.1
 
-* Shape loop
-Nloop0 x=0.0 y=-5.0 z=0
-Nloop1 x=10.0 y=-5.0 z=0
-Nloop2 x=10.0 y=-10.0 z=0
-Nloop3 x=0.0 y=-10.0 z=0
-Nloop4 x=0.0 y=-5.0 z=0
-Eloop0 Nloop0 Nloop1 w=1.0 h=0.1
-Eloop1 Nloop1 Nloop2 w=1.0 h=0.1
-Eloop2 Nloop2 Nloop3 w=1.0 h=0.1
-Eloop3 Nloop3 Nloop4 w=1.0 h=0.1
+* Shape G1
+NG10 x=-50.0 y=21.0 z=0
+NG11 x=50.0 y=21.0 z=0
+EG10 NG10 NG11 w=20.0 h=0.1
+
+* Shape G2
+NG20 x=-50.0 y=-21.0 z=0
+NG21 x=50.0 y=-21.0 z=0
+EG20 NG20 NG21 w=20.0 h=0.1
+
+.equiv NW11 NG10
+.equiv NW11 NG20
 
 *------------ Externals  ------------
 
-* line
-.external Nline0 Nline4
+* W1
+.external NW10 NW11
 
-* loop
-.external Nloop0 Nloop4
+* G1
+.external NW10 NG11
+
+* G2
+.external NW10 NG21
 
 * Define Frequency
 .freq fmin=0.15915 fmax=0.15915 ndec=1.0

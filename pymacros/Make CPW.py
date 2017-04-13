@@ -25,8 +25,8 @@ def make_cpw():
     
     center_radius = 100.0/dbu #Curve radius
     center_width = 10./dbu #Center conductor width
-    s_width = 6./dbu #Center - Outer conductor spacing
-    keepout_width = 4./dbu #Keepout spacing
+    s_width = 7./dbu#Center - Outer conductor spacing
+    keepout_width = center_width * 0.4 #Keepout spacing
     
     ri = center_radius - .5*center_width #Inner radius
     ro = center_radius + .5*center_width # Outer radius

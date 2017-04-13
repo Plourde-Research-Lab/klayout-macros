@@ -79,7 +79,7 @@ class Circle(pya.PCellDeclarationHelper):
   def can_create_from_shape_impl(self):
     # Implement the "Create PCell from shape" protocol: we can use any shape which 
     # has a finite bounding box
-    self.shape.is_box() or self.shape.is_polygon() or self.shape.is_path()
+    return self.shape.is_box() or self.shape.is_polygon() or self.shape.is_path()
   
   def parameters_from_shape_impl(self):
     # Implement the "Create PCell from shape" protocol: we set r and l from the shape's 
@@ -122,7 +122,7 @@ class PyLib(pya.Library):
     # Create the PCell declarations
     self.layout().register_pcell("Circle", Circle())
     # That would be the place to put in more PCells ...
-    
+    #self.layout().register_pcell("CPW", CPW())
     # Register us with the name "MyLib".
     # If a library with that name already existed, it will be replaced then.
     self.register("PyLib")

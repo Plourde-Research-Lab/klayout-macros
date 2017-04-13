@@ -115,7 +115,7 @@ menu.insert_separator("tools_menu.end", "sep_fh")
 menu.insert_item("tools_menu.end", "fh", x)
 
 import time
-#from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE
 import subprocess
 from os.path import join, curdir, abspath
 
@@ -232,13 +232,13 @@ class FastHenryFile():
 
     def call_fh(self):
         print(self.path)
-        out = os.popen('cd /Users/caleb/Development/klayout-macros/pymacros && fasthenry test.inp')
+        out = Popen('fasthenry ' + self.path)
         #out = os.popen('ls')
         while 1:
           if out.readline() == "":
             break
           print(out.readline())
-        #f = open('Zc.mat', 'r')
+        f = open(join(self.dir, 'Zc.mat'), 'r')
         result = out.read()
         return out, result
 
@@ -246,6 +246,6 @@ class FastHenryFile():
       with Popen(["ls", self.path], stdout=PIPE, bufsize=1, universal_newlines=True) as p:
         for line in p.stdout:
           print(line)
-      f = open(path.join(self.dir, 'Zc.mat'), 'r')
+      f = open(join(self.dir, 'Zc.mat'), 'r')
       result = f.read()
       return out, result

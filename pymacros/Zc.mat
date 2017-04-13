@@ -1,5 +1,7 @@
-Row 2:  nloop0  to  nloop4
-Row 1:  nline0  to  nline4
-Impedance matrix for frequency = 0.15915 2 x 2
-             0  +1.67703e-11j            -0  -4.19982e-12j 
-           -0  -4.19995e-12j             0  +1.78993e-11j 
+Row 3:  nw10  to  ng21
+Row 2:  nw10  to  ng11
+Row 1:  nw10  to  nw11
+Impedance matrix for frequency = 0.15915 3 x 3
+             0  +6.55414e-11j             0  +9.53615e-11j             0  +9.53598e-11j 
+            0  +9.53417e-11j             0  +1.80136e-10j             0  +1.45018e-10j 
+            0  +9.53832e-11j             0  +1.45113e-10j             0  +1.80192e-10j 

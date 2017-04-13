@@ -1,3 +1,4 @@
+# $autorun
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,7 +44,7 @@ $calc_freq = MenuAction.new( "Compute frequency of selected CPW", "Ctl + L" ) do
   total_length = 0.0
 
   #CPW consists of  6um wide polygons
-  cpw_width = 6.0
+  cpw_width = 10.0
 
   lv.each_object_selected do |obj|
 
